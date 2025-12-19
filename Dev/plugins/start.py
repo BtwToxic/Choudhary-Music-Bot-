@@ -31,8 +31,8 @@ async def start(_, message: types.Message):
     )
 
     key = buttons.start_key(message.lang, private)
-    await message.reply_video(
-        video="https://ar-hosting.pages.dev/1764351689146.mp4",
+    await message.reply_photo(
+        photo="https://i.ibb.co/RpGSCfmt/x.jpg",
         caption=_text,
         reply_markup=key,
         quote=not private,
