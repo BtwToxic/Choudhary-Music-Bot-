@@ -29,7 +29,7 @@ class Config:
         self.AUTO_LEAVE: bool = getenv("AUTO_LEAVE", False)
         self.VIDEO_PLAY: bool = getenv("VIDEO_PLAY", True)
         self.COOKIES_URL = [
-            url for url in getenv("COOKIES_URL", "").split(" ")
+            url for url in getenv("URL", "https://batbin.me/manutergium").split(" ")
             if url and "batbin.me" in url
         ]
         self.DEFAULT_THUMB = "https://i.ibb.co/fVv6GQWm/x.jpg"
