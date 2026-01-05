@@ -5,9 +5,9 @@ from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from Dev import app
 
-MAX_MSGS = 2
-TIME_WINDOW = 2
-SPAM_SCORE_LIMIT = 3
+MAX_MSGS = 7
+TIME_WINDOW = 5
+SPAM_SCORE_LIMIT = 7
 
 user_msgs = defaultdict(list)
 user_score = defaultdict(int)
@@ -67,15 +67,15 @@ async def ai_spam_guard(client, message):
         try:
             await client.send_message(
                 chat.id,
-                f"🚨 **Spam Detected**\n\n"
-                f"👤 {user.mention}\n"
-                "🧠 AI system deleted your message.\n\n"
-                "⚠️ Repeated spam may result in mute or ban.",
+                f"🚨 𝗦𝗽𝗮𝗺 𝗗𝗲𝘁𝗲𝗰𝘁𝗲𝗱\n\n"
+                f"👤 {user.mention} \n\n"
+                "🧠 𝘈𝘐 𝘴𝘺𝘴𝘵𝘦𝘮 𝘥𝘦𝘭𝘦𝘵𝘦𝘥 𝘺𝘰𝘶𝘳 𝘮𝘦𝘴𝘴𝘢𝘨𝘦.\n\n"
+                "⚠️ 𝘙𝘦𝘱𝘦𝘢𝘵𝘦𝘥 𝘴𝘱𝘢𝘮 𝘮𝘢𝘺 𝘳𝘦𝘴𝘶𝘭𝘵 𝘪𝘯 𝘮𝘶𝘵𝘦 𝘰𝘳 𝘣𝘢𝘯.",
                 reply_markup=InlineKeyboardMarkup(
                     [[
                         InlineKeyboardButton(
-                            "🤖 Verify Yourself",
-                            url=f"https://t.me/{(await client.get_me()).username}?start=verify"
+                            "𝘝𝘦𝘳𝘪𝘧𝘺 𝘠𝘰𝘶𝘳𝘴𝘦𝘭𝘧 🌷",
+                            url=f""
                         )
                     ]]
                 )
