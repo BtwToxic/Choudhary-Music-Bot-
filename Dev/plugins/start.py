@@ -20,20 +20,9 @@ async def start(_, message: types.Message):
     if message.from_user.id in app.bl_users and message.from_user.id not in db.notified:
         return await message.reply_text(message.lang["bl_user_notify"])
 
-    # ✅ EXISTING: start=help
     if len(message.command) > 1 and message.command[1] == "help":
         return await _help(_, message)
 
-    # ✅ ADDED: start=verify (ONLY THIS PART IS NEW)
-    if len(message.command) > 1 and message.command[1] == "verify":
-        await db.add_verified(message.from_user.id)
-        return await message.reply_text(
-            "✅ **Verification Successful**\n\n"
-            "You are now verified as a human.\n"
-            "You can return to the group and send messages freely."
-        )
-
-    # ⬇️ EVERYTHING BELOW IS UNCHANGED
     private = message.chat.type == enums.ChatType.PRIVATE
     _text = (
         message.lang["start_pm"].format(message.from_user.first_name, app.name)
