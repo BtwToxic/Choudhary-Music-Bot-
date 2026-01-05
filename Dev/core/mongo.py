@@ -233,6 +233,26 @@ class MongoDB:
         return self.chats
 
     # ─────────────────────────────
+    # SUDO METHODS (RESTORED)
+    # ─────────────────────────────
+    async def add_sudo(self, user_id: int) -> None:
+        await self.cache.update_one(
+            {"_id": "sudoers"},
+            {"$addToSet": {"user_ids": user_id}},
+            upsert=True,
+        )
+
+    async def del_sudo(self, user_id: int) -> None:
+        await self.cache.update_one(
+            {"_id": "sudoers"},
+            {"$pull": {"user_ids": user_id}},
+        )
+
+    async def get_sudoers(self) -> list[int]:
+        doc = await self.cache.find_one({"_id": "sudoers"})
+        return doc.get("user_ids", []) if doc else []
+
+    # ─────────────────────────────
     # USER METHODS
     # ─────────────────────────────
     async def is_user(self, user_id: int) -> bool:
