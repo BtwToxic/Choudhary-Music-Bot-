@@ -1,51 +1,32 @@
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from Dev import app
-from Dev import db
-
-verified_col = db.verified_users
+from Dev import app, mongodb
 
 
 # ─────────────────────────────
-# CHECK VERIFIED
-# ─────────────────────────────
-async def is_verified(user_id: int) -> bool:
-    return bool(verified_col.find_one({"user_id": user_id}))
-
-
-# ─────────────────────────────
-# SAVE VERIFIED
-# ─────────────────────────────
-async def save_verified(user_id: int):
-    verified_col.update_one(
-        {"user_id": user_id},
-        {"$set": {"user_id": user_id}},
-        upsert=True
-    )
-
-
-# ─────────────────────────────
-# VERIFY VIA START PARAM
+# VERIFY VIA START PARAM ONLY
 # /start verify OR ?start=verify
 # ─────────────────────────────
 @app.on_message(filters.private & filters.command("start"))
 async def verify_user(client, message):
+    # agar /start ke saath argument nahi hai → ignore
     if len(message.command) < 2:
         return
 
+    # sirf verify ke liye
     if message.command[1].lower() != "verify":
         return
 
-    await save_verified(message.from_user.id)
+    await mongodb.add_verified(message.from_user.id)
 
     await message.reply_text(
         "✅ **Human Verification Successful**\n\n"
-        "Ab aap group me freely message bhej sakte ho."
+        "Ab aap group me freely message bhej sakte ho 🎉"
     )
 
 
 # ─────────────────────────────
-# GROUP MESSAGE GUARD
+# GROUP VERIFICATION GUARD
 # ─────────────────────────────
 @app.on_message(filters.group & ~filters.service & ~filters.me)
 async def verify_guard(client, message):
@@ -55,19 +36,19 @@ async def verify_guard(client, message):
     if not user:
         return
 
-    # Admin skip
+    # Admin / Owner skip
     try:
-        m = await client.get_chat_member(chat.id, user.id)
-        if m.status in ("administrator", "owner"):
+        member = await client.get_chat_member(chat.id, user.id)
+        if member.status in ("administrator", "owner"):
             return
     except:
         return
 
-    # Already verified → allow
-    if await is_verified(user.id):
+    # Agar already verified → allow
+    if await mongodb.is_verified(user.id):
         return
 
-    # ❌ Not verified → delete msg
+    # ❌ Not verified → user ka msg delete
     try:
         await message.delete()
     except:
@@ -80,8 +61,8 @@ async def verify_guard(client, message):
             chat.id,
             f"⚠️ **Human Verification Required**\n\n"
             f"👤 {user.mention}\n\n"
-            "❌ Without Verification Msg Bot Allowed.\n"
-            "👇 Continue karne ke liye verify kre",
+            "❌ Bot start kiye bina message allowed nahi hai.\n"
+            "👇 Verify karne ke liye bot start karein:",
             reply_markup=InlineKeyboardMarkup(
                 [[
                     InlineKeyboardButton(
