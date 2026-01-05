@@ -1,6 +1,6 @@
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from Dev import app, mongodb
+from Dev import app, db
 
 
 # ─────────────────────────────
