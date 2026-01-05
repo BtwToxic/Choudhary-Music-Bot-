@@ -14,9 +14,11 @@ user_msgs = defaultdict(list)
 user_score = defaultdict(int)
 
 SPAM_PATTERNS = [
-    r"http[s]?://",
-    r"t\.me/",
-    r"@[\w\d_]{4,}",
+    r"http[s]?://",                 
+    r"www\.",                       
+    r"\b[a-z0-9-]+\.(com|in|net|org|io|me|xyz|co)\b", 
+    r"t\.me/",                      
+    r"@[\w\d_]{4,}",               
     r"(free|earn|crypto|forex|profit)",
     r"(join|click|dm me)",
     r"(subscribe|promo|offer)",
